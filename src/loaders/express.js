@@ -1,4 +1,4 @@
-import express from "express";
+import * as express from "express";
 import routes from "../api";
 import config from "../config";
 
@@ -14,4 +14,6 @@ export default (app) => {
   app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ success: false, message: err.message });
   });
+
+  console.log("EXPRESS LOADED");
 };
