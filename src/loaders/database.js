@@ -1,5 +1,6 @@
 import db from "mysql2/promise";
 import config from "../config";
+import logger from "../utils/logger";
 
 export default async () => {
   const conn = await db.createConnection(config.db);
@@ -58,5 +59,5 @@ export default async () => {
     `
   );
   await conn.end();
-  console.log("DATABASE LOADED");
+  logger.info("DATABASE LOADED");
 };
