@@ -11,9 +11,13 @@ const UserService = {
     const newUser = await User.create({ id, nickname });
     return jwt.sign({ id: newUser.id }, config.jwtSecret);
   },
+
+  findById: async (id) => {
+    return await User.findByPk(id);
+  },
 };
 
 function generateName() {
-  return Math.random().toString(36).substr(2, 10);
+  return Math.random().toString(36).substr(2, 8);
 }
 export default UserService;
