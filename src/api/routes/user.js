@@ -22,6 +22,20 @@ function userRouter(root) {
       next(err);
     }
   });
+
+  /**
+   * @description 프로필 수정하기 내 정보
+   * @route GET /users/me/edit
+   */
+  router.get("/me/edit", auth.isLogin, async (req, res, next) => {
+    try {
+      const { user } = req;
+
+      res.status(200).json(getApi({ suc: true, data: user }));
+    } catch (err) {
+      next(err);
+    }
+  });
 }
 
 export default userRouter;
