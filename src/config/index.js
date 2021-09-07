@@ -24,4 +24,12 @@ export default {
 
   // api
   api: { prefix: "/api" },
+
+  login: {
+    method: process.env.LOGIN_METHOD,
+    url: process.env.LOGIN_URL,
+    headers: {
+      "Content-Type": process.env.LOGIN_CONTENT_TYPE,
+    },
+  },
 };
