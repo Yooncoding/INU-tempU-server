@@ -36,6 +36,21 @@ function userRouter(root) {
       next(err);
     }
   });
+
+  /**
+   * @description 유저 프로필 조회
+   * @route GET /users/:userId
+   */
+  router.get("/:userId", auth.isLogin, async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const user = await UserService.getUser(userId);
+
+      res.status(201).json(getApi({ suc: true, data: user }));
+    } catch (err) {
+      next(err);
+    }
+  });
 }
 
 export default userRouter;
