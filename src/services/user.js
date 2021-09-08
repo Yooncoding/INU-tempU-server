@@ -18,15 +18,25 @@ const UserService = {
     if (!user) throw new CustomError("USER_NOT_EXIST", 404, "탈퇴한 회원입니다.");
 
     const users = await User.findAll({ order: [["point", "DESC"]] });
-    const rank = users.findIndex((user, idx) => {
-      if (user.id == userId) return idx;
-    });
+    const rank = getMyRank(users, userId);
 
     let data = {};
     data.id = user.id;
     data.image = user.image;
     data.point = user.point;
-    data.rank = rank + 1;
+    data.rank = rank;
+
+    return data;
+  },
+
+  getUsersRank: async (userId) => {
+    const users = await User.findAll({ order: [["point", "DESC"]] });
+    const rank = getMyRank(users, userId);
+    const usersRank = users.slice(0, 5);
+
+    let data = {};
+    data.usersRank = usersRank;
+    data.rank = rank;
 
     return data;
   },
@@ -39,4 +49,14 @@ const UserService = {
 function generateName() {
   return Math.random().toString(36).substr(2, 8);
 }
+
+function getMyRank(users, userId) {
+  let rank = 0;
+  users.some((user) => {
+    rank++;
+    if (user.id == userId) return true;
+  });
+  return rank;
+}
+
 export default UserService;

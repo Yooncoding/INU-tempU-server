@@ -38,6 +38,21 @@ function userRouter(root) {
   });
 
   /**
+   * @description 포인트 랭킹
+   * @route GET /users/rank
+   */
+  router.get("/rank", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const usersRank = await UserService.getUsersRank(id);
+
+      res.status(200).json(getApi({ suc: true, data: usersRank }));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  /**
    * @description 유저 프로필 조회
    * @route GET /users/:userId
    */
@@ -46,7 +61,7 @@ function userRouter(root) {
       const { userId } = req.params;
       const user = await UserService.getUser(userId);
 
-      res.status(201).json(getApi({ suc: true, data: user }));
+      res.status(200).json(getApi({ suc: true, data: user }));
     } catch (err) {
       next(err);
     }
