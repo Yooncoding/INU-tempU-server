@@ -11,6 +11,7 @@ export default (app) => {
   app.use(morgan("dev"));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use("/images", express.static("uploads"));
 
   // router
   app.use(config.api.prefix, routes());

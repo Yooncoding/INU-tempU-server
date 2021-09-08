@@ -1,6 +1,7 @@
 import { Router } from "express";
 import getApi from "../../utils/customRes";
 import auth from "../middlewares/auth";
+import profileUpload from "../middlewares/multer";
 import UserService from "../../services/user";
 import UserValidator from "../middlewares/validators/user/validator";
 
@@ -49,6 +50,22 @@ function userRouter(root) {
       await UserService.postEdit(id, nickname);
 
       res.status(200).json(getApi({ suc: true, mes: "닉네임 변경 완료" }));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  /**
+   * @description 프로필 이미지 변경
+   * @route PUT /users/me/image
+   */
+  router.put("/me/image", auth.isLogin, profileUpload.single("image"), async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const image = req.file.filename;
+      await UserService.putImage(id, image);
+
+      res.status(200).json(getApi({ suc: true, mes: "프로필이미지 변경 완료" }));
     } catch (err) {
       next(err);
     }
