@@ -2,6 +2,7 @@ import { Router } from "express";
 import getApi from "../../utils/customRes";
 import auth from "../middlewares/auth";
 import UserService from "../../services/user";
+import UserValidator from "../middlewares/validators/user/validator";
 
 const router = Router();
 
@@ -41,7 +42,7 @@ function userRouter(root) {
    * @description 프로필 수정하기 제출
    * @route POST /users/me/edit
    */
-  router.post("/me/edit", auth.isLogin, async (req, res, next) => {
+  router.post("/me/edit", auth.isLogin, UserValidator.postEdit, async (req, res, next) => {
     try {
       const { id } = req.user;
       const { nickname } = req.body;
