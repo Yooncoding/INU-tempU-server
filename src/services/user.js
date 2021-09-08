@@ -13,6 +13,14 @@ const UserService = {
     return jwt.sign({ id: newUser.id }, config.jwtSecret);
   },
 
+  postEdit: async (userId, nickname) => {
+    const existNickname = await User.findOne({ where: { nickname } });
+    const mutableNickname = existNickname && existNickname.id !== userId;
+    if (mutableNickname) throw new CustomError("EXIST_NICKNAME", 409, "이미 존재하는 닉네임입니다.");
+
+    return await User.update({ nickname }, { where: { id: userId } });
+  },
+
   getUser: async (userId) => {
     const user = await User.findByPk(userId);
     if (!user) throw new CustomError("USER_NOT_EXIST", 404, "탈퇴한 회원입니다.");

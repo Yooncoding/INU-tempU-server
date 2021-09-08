@@ -38,6 +38,22 @@ function userRouter(root) {
   });
 
   /**
+   * @description 프로필 수정하기 제출
+   * @route POST /users/me/edit
+   */
+  router.post("/me/edit", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { nickname } = req.body;
+      await UserService.postEdit(id, nickname);
+
+      res.status(200).json(getApi({ suc: true, mes: "닉네임 변경 완료" }));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  /**
    * @description 포인트 랭킹
    * @route GET /users/rank
    */
