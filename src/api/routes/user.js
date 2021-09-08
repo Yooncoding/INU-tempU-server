@@ -72,6 +72,21 @@ function userRouter(root) {
   });
 
   /**
+   * @description 프로필 이미지 삭제
+   * @route DELETE /users/me/image
+   */
+  router.delete("/me/image", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      await UserService.deleteImage(id);
+
+      res.status(200).json(getApi({ suc: true, mes: "프로필이미지 삭제 완료" }));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  /**
    * @description 포인트 랭킹
    * @route GET /users/rank
    */

@@ -33,6 +33,16 @@ const UserService = {
     return await User.update({ image }, { where: { id: userId } });
   },
 
+  deleteImage: async (userId) => {
+    const user = await User.findByPk(userId);
+    const DEFAULT_PROFILE_IMAGE = "profile-default.png";
+    if (user.image === DEFAULT_PROFILE_IMAGE) throw new CustomError("ALREADY_PROFILE_DEFAULT", 400, "이미 기본 이미지입니다.");
+
+    const uploadDir = path.join(__dirname, "../../uploads");
+    fs.unlinkSync(uploadDir + "/" + user.image);
+    return await User.update({ image: DEFAULT_PROFILE_IMAGE }, { where: { id: userId } });
+  },
+
   getUser: async (userId) => {
     const user = await User.findByPk(userId);
     if (!user) throw new CustomError("USER_NOT_EXIST", 404, "탈퇴한 회원입니다.");
