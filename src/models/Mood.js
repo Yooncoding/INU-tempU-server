@@ -4,11 +4,6 @@ import { sequelize } from "./sequelize";
 class Mood extends Model {}
 Mood.init(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-    },
     temperature: {
       type: DataTypes.INTEGER,
       allowNull: false,
