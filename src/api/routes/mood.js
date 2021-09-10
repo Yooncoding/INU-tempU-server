@@ -2,6 +2,7 @@ import { Router } from "express";
 import getApi from "../../utils/customRes";
 import auth from "../middlewares/auth";
 import MoodService from "../../services/mood";
+import MoodValidator from "../middlewares/validators/mood/validator";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ function moodRouter(root) {
    * @description 오늘 기분 제출
    * @route POST /mood
    */
-  router.post("/", auth.isLogin, async (req, res, next) => {
+  router.post("/", auth.isLogin, MoodValidator.postMood, async (req, res, next) => {
     try {
       const { id } = req.user;
       const { temperature, description } = req.body;
@@ -61,7 +62,7 @@ function moodRouter(root) {
    * @description 제출한 기분 수정
    * @route PUT /mood/:moodId
    */
-  router.put("/:moodId", auth.isLogin, async (req, res, next) => {
+  router.put("/:moodId", auth.isLogin, MoodValidator.postMood, async (req, res, next) => {
     try {
       const { id } = req.user;
       const { moodId } = req.params;
