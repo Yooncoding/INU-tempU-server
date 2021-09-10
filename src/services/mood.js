@@ -19,6 +19,12 @@ const MoodService = {
     if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
     return mood;
   },
+
+  putMood: async (userId, moodId, temperature, description) => {
+    const mood = await Mood.findOne({ where: { id: moodId, userId } });
+    if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
+    return await Mood.update({ temperature, description }, { where: { id: moodId } });
+  },
 };
 
 async function todayMoodByUser(userId) {

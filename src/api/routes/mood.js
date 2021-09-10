@@ -56,6 +56,23 @@ function moodRouter(root) {
       next(err);
     }
   });
+
+  /**
+   * @description 제출한 기분 수정
+   * @route PUT /mood/:moodId
+   */
+  router.put("/:moodId", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { moodId } = req.params;
+      const { temperature, description } = req.body;
+      await MoodService.putMood(id, moodId, temperature, description);
+
+      res.status(200).json(getApi({ suc: true, mes: "기분 수정 완료" }));
+    } catch (err) {
+      next(err);
+    }
+  });
 }
 
 export default moodRouter;
