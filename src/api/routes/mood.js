@@ -44,9 +44,9 @@ function moodRouter(root) {
 
   /**
    * @description 내가 제출한 기분들 조회
-   * @route GET /mood/archive
+   * @route GET /mood/archive/me
    */
-  router.get("/archive", auth.isLogin, async (req, res, next) => {
+  router.get("/archive/me", MoodValidator.getArchive, auth.isLogin, async (req, res, next) => {
     try {
       const { id } = req.user;
       const { y, m } = req.query;
