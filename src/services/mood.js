@@ -25,6 +25,16 @@ const MoodService = {
     if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
     return await Mood.update({ temperature, description }, { where: { id: moodId } });
   },
+
+  getArchiveMe: async (userId, year, month) => {
+    const Op = Sequelize.Op;
+    year = year ? year : moment().format("YYYY");
+    month = month ? month : moment().format("MM");
+    const MONTHSTART = moment(`${year}-${month}`).startOf("month").format("YYYY-MM-DD");
+    const MONTHEND = moment(`${year}-${month}`).endOf("month").format("YYYY-MM-DD");
+    const mood = await Mood.findAll({ where: { userId, createdAt: { [Op.gt]: MONTHSTART, [Op.lt]: MONTHEND } } });
+    return mood;
+  },
 };
 
 async function todayMoodByUser(userId) {

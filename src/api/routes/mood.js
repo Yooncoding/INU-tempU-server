@@ -43,6 +43,22 @@ function moodRouter(root) {
   });
 
   /**
+   * @description 내가 제출한 기분들 조회
+   * @route GET /mood/archive
+   */
+  router.get("/archive", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { y, m } = req.query;
+      const archive = await MoodService.getArchiveMe(id, y, m);
+
+      res.status(200).json(getApi({ suc: true, data: archive }));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  /**
    * @description 내가 제출한 기분 조회
    * @route GET /mood/:moodId
    */
