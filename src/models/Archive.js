@@ -1,10 +1,10 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "./sequelize";
 
-class Betting extends Model {}
-Betting.init(
+class Archive extends Model {}
+Archive.init(
   {
-    temperature: {
+    temperatureAvg: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -13,7 +13,7 @@ Betting.init(
     sequelize,
     timestamps: true,
     underscored: false,
-    modelName: "Betting",
+    modelName: "Archive",
     freezeTableName: true,
     paranoid: false,
     charset: "utf8mb4",
@@ -21,8 +21,4 @@ Betting.init(
   }
 );
 
-export const associate = (db) => {
-  db.Betting.belongsTo(db.User, { foreignKey: "userId", targetKey: "id" });
-};
-
-export default Betting;
+export default Archive;
