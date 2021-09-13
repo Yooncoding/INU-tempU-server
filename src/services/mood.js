@@ -6,10 +6,13 @@ import CustomError from "../utils/customError";
 const MoodService = {
   getMoodToday: async (userId) => {
     const mood = await todayMoodByUser(userId);
+    if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
     return mood;
   },
 
   postMood: async (userId, temperature, description) => {
+    const mood = await todayMoodByUser(userId);
+    if (mood) throw new CustomError("EXIST_TOAY_MOOD", 400, "오늘 이미 제출된 기분이 있습니다.");
     const newMood = await Mood.create({ temperature, description, userId });
     return newMood;
   },
@@ -21,8 +24,11 @@ const MoodService = {
   },
 
   putMood: async (userId, moodId, temperature, description) => {
+    const TODAY = moment().format("YYYY-MM-DD");
     const mood = await Mood.findOne({ where: { id: moodId, userId } });
+    const CREATEAT = moment(mood.createdAt).format("YYYY-MM-DD");
     if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
+    if (CREATEAT >= TODAY) throw new CustomError("TODAY_MOOD_NOT_EDITABLE", 400, "오늘이 아닌 이전에 제출된 기분만 수정이 가능합니다.");
     return await Mood.update({ temperature, description }, { where: { id: moodId } });
   },
 
@@ -42,7 +48,6 @@ async function todayMoodByUser(userId) {
   const TODAY = moment().format("YYYY-MM-DD");
   const TOMORROW = moment().add(1, "d").format("YYYY-MM-DD");
   const mood = await Mood.findOne({ where: { userId, createdAt: { [Op.gt]: TODAY, [Op.lt]: TOMORROW } } });
-  if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
   return mood;
 }
 
