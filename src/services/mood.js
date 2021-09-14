@@ -6,7 +6,6 @@ import CustomError from "../utils/customError";
 const MoodService = {
   getMoodToday: async (userId) => {
     const mood = await todayMoodByUser(userId);
-    if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
     return mood;
   },
 
@@ -19,7 +18,6 @@ const MoodService = {
 
   getMoodByUser: async (userId, moodId) => {
     const mood = await Mood.findOne({ where: { id: moodId, userId } });
-    if (!mood) throw new CustomError("EXIST_NOT_MOOD", 404, "제출된 기분이 없습니다.");
     return mood;
   },
 
