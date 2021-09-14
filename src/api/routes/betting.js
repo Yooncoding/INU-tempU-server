@@ -22,6 +22,22 @@ function bettingRouter(root) {
       next(err);
     }
   });
+
+  /**
+   * @description 오늘 제출한 베팅 제출
+   * @route POSt /betting
+   */
+  router.post("/", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { temperature } = req.body;
+      const newBetting = await BettingService.postBetting(id, temperature);
+
+      res.status(201).json(getApi({ suc: true, data: newBetting, mes: "오늘 기분 제출 완료" }));
+    } catch (err) {
+      next(err);
+    }
+  });
 }
 
 export default bettingRouter;
