@@ -2,6 +2,7 @@ import { Router } from "express";
 import getApi from "../../utils/customRes";
 import auth from "../middlewares/auth";
 import BettingService from "../../services/betting";
+import BettingValidator from "../middlewares/validators/betting/validator";
 
 const router = Router();
 
@@ -24,10 +25,10 @@ function bettingRouter(root) {
   });
 
   /**
-   * @description 오늘 제출한 베팅 제출
+   * @description 오늘 베팅 제출
    * @route POSt /betting
    */
-  router.post("/", auth.isLogin, async (req, res, next) => {
+  router.post("/", auth.isLogin, BettingValidator.postBetting, async (req, res, next) => {
     try {
       const { id } = req.user;
       const { temperature } = req.body;
