@@ -26,7 +26,7 @@ function bettingRouter(root) {
 
   /**
    * @description 오늘 베팅 제출
-   * @route POSt /betting
+   * @route POST /betting
    */
   router.post("/", auth.isLogin, BettingValidator.postBetting, async (req, res, next) => {
     try {
@@ -34,7 +34,23 @@ function bettingRouter(root) {
       const { temperature } = req.body;
       const newBetting = await BettingService.postBetting(id, temperature);
 
-      res.status(201).json(getApi({ suc: true, data: newBetting, mes: "오늘 기분 제출 완료" }));
+      res.status(201).json(getApi({ suc: true, data: newBetting, mes: "오늘 베팅 제출 완료" }));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  /**
+   * @description 오늘 베팅 수정
+   * @route PUT /betting
+   */
+  router.put("/", auth.isLogin, BettingValidator.postBetting, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const { temperature } = req.body;
+      await BettingService.putBetting(id, temperature);
+
+      res.status(200).json(getApi({ suc: true, mes: "베팅 수정 완료" }));
     } catch (err) {
       next(err);
     }
