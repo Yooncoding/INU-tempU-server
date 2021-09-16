@@ -19,5 +19,13 @@ const ArchiveService = {
     const archive = await Archive.findAll({ where: { createdAt: { [Op.gt]: MONTHSTART, [Op.lt]: MONTHEND } } });
     return archive;
   },
+
+  getYesterdayAvg: async () => {
+    const Op = Sequelize.Op;
+    const TODAY = moment().format("YYYY-MM-DD");
+    const YESTERDAY = moment().subtract(1, "d").format("YYYY-MM-DD");
+    const archive = await Archive.findOne({ where: { createdAt: { [Op.gt]: YESTERDAY, [Op.lt]: TODAY } } });
+    return archive;
+  },
 };
 export default ArchiveService;

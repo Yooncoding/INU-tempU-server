@@ -55,6 +55,21 @@ function bettingRouter(root) {
       next(err);
     }
   });
+
+  /**
+   * @description 베팅 결과 확인
+   * @route GET /betting/result
+   */
+  router.get("/result", auth.isLogin, async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const bettingResult = await BettingService.getBettingResult(id);
+
+      res.status(200).json(getApi({ suc: true, data: bettingResult }));
+    } catch (err) {
+      next(err);
+    }
+  });
 }
 
 export default bettingRouter;
