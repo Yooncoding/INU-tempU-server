@@ -52,6 +52,7 @@ const UserService = {
 
     let data = {};
     data.id = user.id;
+    data.nickname = user.nickname;
     data.image = user.image;
     data.point = user.point;
     data.rank = rank;
