@@ -1,7 +1,9 @@
 import expressLoader from "./express";
-import sequelizeLodaeer from "./sequelize";
+import sequelizeLoader from "./sequelize";
+import jobLoader from "./job";
 
 export default async (app) => {
-  await sequelizeLodaeer();
+  await sequelizeLoader();
   expressLoader(app);
+  jobLoader();
 };
