@@ -41,6 +41,22 @@ const BettingService = {
 
     return data;
   },
+
+  getBettingResultUser: async () => {
+    const yesterdayAvg = await ArchiveService.getYesterdayAvg();
+    if (!yesterdayAvg) throw new CustomError("EXIST_NOT_MOOD", 404, "어제 제출된 기분이 없습니다.");
+
+    const bestUser = await getBestUser(yesterdayAvg);
+    const betterUser = await getBetterUser(yesterdayAvg);
+    const goodUser = await getGoodUser(yesterdayAvg);
+
+    let data = {};
+    data.bestUser = bestUser;
+    data.betterUser = betterUser;
+    data.goodUser = goodUser;
+
+    return data;
+  },
 };
 
 async function todayBettingByUser(userId) {
@@ -72,6 +88,54 @@ function compareBettingAndAvg(betting, avg) {
   if (avg === betting + 1 || avg === betting - 1) result = 300;
   if (avg === betting + 2 || avg === betting - 2) result = 100;
   return result;
+}
+
+async function getBestUser(yesterdayAvg) {
+  const Op = Sequelize.Op;
+  const TODAY = moment().format("YYYY-MM-DD");
+  const YESTERDAY = moment().subtract(1, "d").format("YYYY-MM-DD");
+  const best = await Betting.findAll({
+    where: { temperature: yesterdayAvg.temperatureAvg, createdAt: { [Op.gt]: YESTERDAY, [Op.lt]: TODAY } },
+  });
+  const bestUser = [];
+  best.forEach((best) => {
+    bestUser.push(best.userId);
+  });
+  return bestUser;
+}
+
+async function getBetterUser(yesterdayAvg) {
+  const Op = Sequelize.Op;
+  const TODAY = moment().format("YYYY-MM-DD");
+  const YESTERDAY = moment().subtract(1, "d").format("YYYY-MM-DD");
+  const better = await Betting.findAll({
+    where: {
+      temperature: { [Op.or]: [yesterdayAvg.temperatureAvg + 1, yesterdayAvg.temperatureAvg - 1] },
+      createdAt: { [Op.gt]: YESTERDAY, [Op.lt]: TODAY },
+    },
+  });
+  const betterUser = [];
+  better.forEach((better) => {
+    betterUser.push(better.userId);
+  });
+  return betterUser;
+}
+
+async function getGoodUser(yesterdayAvg) {
+  const Op = Sequelize.Op;
+  const TODAY = moment().format("YYYY-MM-DD");
+  const YESTERDAY = moment().subtract(1, "d").format("YYYY-MM-DD");
+  const good = await Betting.findAll({
+    where: {
+      temperature: { [Op.or]: [yesterdayAvg.temperatureAvg + 2, yesterdayAvg.temperatureAvg - 2] },
+      createdAt: { [Op.gt]: YESTERDAY, [Op.lt]: TODAY },
+    },
+  });
+  const goodUser = [];
+  good.forEach((good) => {
+    goodUser.push(good.userId);
+  });
+  return goodUser;
 }
 
 export default BettingService;

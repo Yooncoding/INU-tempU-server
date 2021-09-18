@@ -1,7 +1,9 @@
 import * as jwt from "jsonwebtoken";
+import Sequelize from "sequelize";
 import path from "path";
 import fs from "fs";
 import User from "../models/User";
+import BettingService from "./betting";
 import config from "../config";
 import CustomError from "../utils/customError";
 
@@ -75,6 +77,16 @@ const UserService = {
   findById: async (userId) => {
     return await User.findByPk(userId);
   },
+
+  putPointByBetting: async () => {
+    const data = await BettingService.getBettingResultUser();
+
+    await givePointToBest(data);
+    await givePointToBetter(data);
+    await givePointToGood(data);
+
+    return true;
+  },
 };
 
 function generateName() {
@@ -88,6 +100,35 @@ function getMyRank(users, userId) {
     if (user.id == userId) return true;
   });
   return rank;
+}
+
+async function givePointToBest(data) {
+  const Op = Sequelize.Op;
+  const bestUsers = await User.findAll({ where: { id: { [Op.in]: data.bestUser } } });
+
+  bestUsers.forEach(async (user) => {
+    await User.update({ point: user.point + 500 }, { where: { id: user.id } });
+  });
+  return true;
+}
+
+async function givePointToBetter(data) {
+  const Op = Sequelize.Op;
+  const betterUsers = await User.findAll({ where: { id: { [Op.in]: data.betterUser } } });
+
+  betterUsers.forEach(async (user) => {
+    await User.update({ point: user.point + 300 }, { where: { id: user.id } });
+  });
+  return true;
+}
+
+async function givePointToGood(data) {
+  const Op = Sequelize.Op;
+  const goodUsers = await User.findAll({ where: { id: { [Op.in]: data.goodUser } } });
+  goodUsers.forEach(async (user) => {
+    await User.update({ point: user.point + 100 }, { where: { id: user.id } });
+  });
+  return true;
 }
 
 export default UserService;
