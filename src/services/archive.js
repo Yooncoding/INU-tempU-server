@@ -27,5 +27,10 @@ const ArchiveService = {
     const archive = await Archive.findOne({ where: { createdAt: { [Op.gt]: YESTERDAY, [Op.lt]: TODAY } } });
     return archive;
   },
+
+  postTodayMoodAvg: async () => {
+    const data = await MoodService.getTodayMoodAvg();
+    return await Archive.create({ temperatureAvg: data.moodAvg });
+  },
 };
 export default ArchiveService;

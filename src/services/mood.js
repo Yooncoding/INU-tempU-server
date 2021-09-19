@@ -41,6 +41,20 @@ const MoodService = {
     const mood = await Mood.findAll({ where: { userId, createdAt: { [Op.gt]: MONTHSTART, [Op.lt]: MONTHEND } } });
     return mood;
   },
+
+  getTodayMoodAvg: async () => {
+    const Op = Sequelize.Op;
+    const TODAY = moment().format("YYYY-MM-DD");
+    const TOMORROW = moment().add(1, "d").format("YYYY-MM-DD");
+    const moodCount = await Mood.count({ where: { createdAt: { [Op.gt]: TODAY, [Op.lt]: TOMORROW } } });
+    const moodSum = await Mood.sum("temperature", { where: { createdAt: { [Op.gt]: TODAY, [Op.lt]: TOMORROW } } });
+
+    let data = {};
+    data.moodAvg = Math.round(moodSum / moodCount);
+    data.moodCount = moodCount;
+
+    return data;
+  },
 };
 
 async function todayMoodByUser(userId) {
