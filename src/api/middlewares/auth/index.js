@@ -10,17 +10,21 @@ const auth = {
     const data = `log=${id}&pwd=${password}`;
     const options = {
       ...config.login,
-      form: data,
+      body: data,
     };
     request(options, function (error, response) {
       if (error) next(error);
-      if (response) {
-        if (!response.body) {
-          const error = new CustomError("NOT_STUDENT", 401, "학번과 비밀번호를 다시 확인해주세요.");
-          next(error);
-        }
+      if (!response) {
+        const error = new CustomError("NOT_STUDENT", 401, "학번과 비밀번호를 다시 확인해주세요.");
+        return next(error);
       }
-      next();
+      if (response.headers["set-cookie"][2].match(/wrong_password/)) {
+        const error = new CustomError("NOT_STUDENT", 401, "학번과 비밀번호를 다시 확인해주세요.");
+        return next(error);
+      }
+      if (response.headers["set-cookie"][4].match(/logged_in/)) {
+        return next();
+      }
     });
   },
 
