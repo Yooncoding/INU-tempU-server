@@ -1,6 +1,11 @@
 import joi from "joi";
 
 const schema = {
+  login: joi.object({
+    id: joi.string().required(),
+    password: joi.string().required(),
+  }),
+
   postEdit: joi.object({
     nickname: joi
       .string()
