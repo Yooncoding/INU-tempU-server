@@ -14,7 +14,7 @@ function userRouter(root) {
    * @description 로그인
    * @route POST /users/login
    */
-  router.post("/login", auth.isStudent, async (req, res, next) => {
+  router.post("/login", UserValidator.login, auth.isStudent, async (req, res, next) => {
     try {
       const { id } = req.body;
       const token = await UserService.login(id);
